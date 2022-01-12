@@ -10,8 +10,11 @@ class Category extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name'
+    ];
 
-    public function setSlugAttribute($value){
-        $this->attributes['slug'] = Str::slug($this->name);
+    public function setSlugAttribute(){
+        $this->attributes['url'] = Str::slug($this->name);
     }
 }

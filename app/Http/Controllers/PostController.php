@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Post;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
 
 class PostController extends Controller
 {
@@ -11,10 +16,10 @@ class PostController extends Controller
 
     function __construct()
     {
-        $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['only' => ['index','show']]);
-        $this->middleware('permission:post-create', ['only' => ['create','store']]);
-        $this->middleware('permission:post-edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:post-delete', ['only' => ['destroy']]);
+        // $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['only' => ['index','show']]);
+        // $this->middleware('permission:post-create', ['only' => ['create','store']]);
+        // $this->middleware('permission:post-edit', ['only' => ['edit','update']]);
+        // $this->middleware('permission:post-delete', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -23,7 +28,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::paginate(10);
+        return view('post.index', compact('posts'));
     }
 
     /**
@@ -33,7 +39,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+
+        $categories = Category::all();
+        return view('post.create', compact('categories'));
     }
 
     /**
@@ -44,7 +52,27 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $data = $request->validate([
+            'title' => 'required',
+            'category_id' => 'required|exists:App\Models\Category,id',
+            'body' => 'required',
+            'photo' => 'required|image|max:1000'
+        ]);
+
+        $route_img = $request['photo']->store('posts', 'public');
+        $img = Image::make(public_path("storage/{$route_img}"))->fit(800, 600);
+        $img->save();
+
+        $post = new Post($data);
+        $post->published_at = Carbon::now();
+        $post->user_id = auth()->user()->id;
+        $post->photo = $route_img;
+        $post->setSlugAttribute();
+        $post->save();
+
+        return redirect()->route('posts.index')->with('status', 'Post created succesfully.');
+
     }
 
     /**
@@ -55,7 +83,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return view ('post.show', compact('post'));
     }
 
     /**
@@ -66,7 +94,8 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        $categories = Category::all();
+        return view ('post.edit', compact('post', 'categories'));
     }
 
     /**
@@ -78,7 +107,31 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $data = $request->validate([
+            'title' => 'required',
+            'category_id' => 'required|exists:App\Models\Category,id',
+            'body' => 'required',
+        ]);
+
+
+        if($request['photo']){
+            $imagen = $post->photo;
+            if(File::exists('storage/'.$imagen)){
+                File::delete('storage/'.$imagen);
+            }
+            $route_img = $request['photo']->store('posts', 'public');
+            $img = Image::make(public_path("storage/{$route_img}"))->fit(800, 600);
+            $img->save();
+            $post->photo = $route_img;
+        }
+
+
+        $post->published_at = Carbon::now();
+        $post->user_id = auth()->user()->id;
+        $post->setSlugAttribute();
+        $post->save();
+
+        return redirect()->route('posts.index')->with('status', 'Post updated succesfully.');
     }
 
     /**
@@ -89,6 +142,13 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $imagen = $post->photo;
+
+        if(File::exists('storage/'.$imagen)){
+            File::delete('storage/'.$imagen);
+        }
+
+       $post->delete();
+       return redirect()->route('posts.index')->with('status', 'Post deleted succesfully.');
     }
 }

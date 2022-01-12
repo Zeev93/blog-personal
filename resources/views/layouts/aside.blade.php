@@ -17,7 +17,7 @@
     <ul class="w-full text-center">
 
         <li class="py-3">
-            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('posts')">
+            <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts')">
                 {{ __('Posts') }}
             </x-nav-link>
         </li>

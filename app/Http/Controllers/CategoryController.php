@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -37,7 +38,18 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       $data = $request->validate([
+           'name' => 'required'
+       ]);
+
+
+       $category = new Category($data);
+
+       $category->setSlugAttribute();
+
+       $category->save();
+
+       return redirect()->route('categories.index')->with('status', 'Category created succesfully.');
     }
 
     /**
@@ -59,7 +71,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        return view('category.edit', compact('category'));
     }
 
     /**
@@ -71,7 +83,14 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required'
+        ]);
+
+        $category->name = $data['name'];
+        $category->setSlugAttribute();
+        $category->save();
+        return redirect()->route('categories.index')->with('status', 'Category updated succesfully.');
     }
 
     /**
@@ -82,6 +101,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return redirect()->route('categories.index')->with('status', 'Category deleted succesfully.');
     }
 }
