@@ -20,7 +20,7 @@ class PostFactory extends Factory
             "url" => Str::slug($this->faker->words(3, true), '-'),
             "published_at" => Carbon::now(),
             "body" => $this->faker->sentence(15),
-            "category_id" => $this->faker->numberBetween(1,10),
+            "category_id" => $this->faker->numberBetween(1,8),
             "user_id" => 1
         ];
     }

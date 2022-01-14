@@ -3,12 +3,9 @@
         <li class="my-auto mx-3">
             <a href="{{ route('home') }}">Inicio</a>
         </li>
-        <li class="my-auto mx-3 ml-auto">
-            <input type="text" placeholder="Search" class="w-full block p-2 rounded shadow">
-        </li>
 
         @if (Route::has('login'))
-                <li class="my-auto mx-3">
+                <li class="my-auto mx-3 ml-auto">
                     @auth
                         <a href="{{ url('/dashboard') }}" class="">Dashboard</a>
                     @else

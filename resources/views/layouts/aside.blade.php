@@ -27,6 +27,21 @@
                 {{ __('Categories') }}
             </x-nav-link>
         </li>
+        <li class="pb-3">
+            <x-nav-link :href="route('tags.index')" :active="request()->routeIs('tags.index')">
+                {{ __('Tags') }}
+            </x-nav-link>
+        </li>
+        <li class="pb-3">
+            <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                {{ __('Users') }}
+            </x-nav-link>
+        </li>
+        <li class="pb-3">
+            <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.index')">
+                {{ __('Roles') }}
+            </x-nav-link>
+        </li>
     </ul>
 
 

@@ -21,6 +21,7 @@
     </head>
     <body class="antialiased bg-gray-200 min-h-fit">
         @include('layouts.nav')
+        @include('components.category-nav')
         @yield("content")
     </body>
 </html>

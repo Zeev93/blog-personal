@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Tag;
 use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -28,6 +29,7 @@ class PostController extends Controller
      */
     public function index()
     {
+
         $posts = Post::paginate(10);
         return view('post.index', compact('posts'));
     }
@@ -39,9 +41,9 @@ class PostController extends Controller
      */
     public function create()
     {
-
+        $tags = Tag::all();
         $categories = Category::all();
-        return view('post.create', compact('categories'));
+        return view('post.create', compact('categories', 'tags'));
     }
 
     /**
@@ -57,8 +59,10 @@ class PostController extends Controller
             'title' => 'required',
             'category_id' => 'required|exists:App\Models\Category,id',
             'body' => 'required',
-            'photo' => 'required|image|max:1000'
+            'photo' => 'required|image|max:1000',
         ]);
+
+        $tags = $request['tags'];
 
         $route_img = $request['photo']->store('posts', 'public');
         $img = Image::make(public_path("storage/{$route_img}"))->fit(800, 600);
@@ -70,6 +74,7 @@ class PostController extends Controller
         $post->photo = $route_img;
         $post->setSlugAttribute();
         $post->save();
+        $post->tags()->sync($tags);
 
         return redirect()->route('posts.index')->with('status', 'Post created succesfully.');
 
@@ -94,8 +99,9 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
+        $tags = Tag::all();
         $categories = Category::all();
-        return view ('post.edit', compact('post', 'categories'));
+        return view('post.edit', compact('post', 'categories', 'tags'));
     }
 
     /**
@@ -113,6 +119,7 @@ class PostController extends Controller
             'body' => 'required',
         ]);
 
+        $tags = $request['tags'];
 
         if($request['photo']){
             $imagen = $post->photo;
@@ -125,11 +132,14 @@ class PostController extends Controller
             $post->photo = $route_img;
         }
 
-
+        $post->title = $data['title'];
+        $post->category_id = $data['category_id'];
+        $post->body = $data['body'];
         $post->published_at = Carbon::now();
         $post->user_id = auth()->user()->id;
         $post->setSlugAttribute();
         $post->save();
+        $post->tags()->sync($tags);
 
         return redirect()->route('posts.index')->with('status', 'Post updated succesfully.');
     }

@@ -19,7 +19,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('id', 'DESC')->paginate(5);
+        $users = User::orderBy('id', 'DESC')->paginate(10);
         return view('users.index', compact('users'));
     }
 
@@ -45,16 +45,16 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|same:confirm-password',
-            'rol' => 'required'
+            'password' => 'required|same:password_confirmation',
+            // 'rol' => 'required'
         ]);
 
         $data['password'] = Hash::make($data['password']);
 
         $user = User::create($data);
-        $user->assignRole($data['rol']);
+        // $user->assignRole($data['rol']);
 
-        return redirect()->route('users.index')->withSuccess('User created successfully');
+        return redirect()->route('users.index')->with('status', 'User created successfully.');
     }
 
     /**
@@ -93,24 +93,19 @@ class UserController extends Controller
     {
         $data = $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'same:confirm-password',
-            'rol' => 'required'
+            'password' => 'same:password_confirmation|required_if:password_confirmation,same:password_confirmation',
         ]);
+
+
 
         if(!empty($data['password'])){
             $data['password'] = Hash::make($data['password']);
         }else{
             $data = Arr::except($data, array('password'));
         }
-
         $user->update($data);
 
-        DB::table('model_has_roles')->where('model_id', $user->id)->delete();
-        $user->assignRole($data['rol']);
-
-
-        return redirect()->route('users.index')->withSuccess('User updated successfully');
+        return redirect()->route('users.index')->with('status', 'User updated successfully.');
     }
 
     /**
@@ -122,6 +117,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-        return redirect()->route('users.index')->withSuccess('User deleted successfully');
+        return redirect()->route('users.index')->with('status', 'User deleted successfully.');
+
     }
 }

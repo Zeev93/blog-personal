@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Database\Seeder;
 use Database\Factories\CategoryFactory;
+use Illuminate\Cache\TagSet;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,7 +20,8 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
 
         $this->call(UserSeeder::class);
-        Category::factory(10)->create();
+        $this->call(CategorySeeder::class);
+        $this->call(TagSeeder::class);
         Post::factory(10)->create();
     }
 }

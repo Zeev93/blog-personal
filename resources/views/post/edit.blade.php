@@ -55,6 +55,17 @@
                             @enderror
                         </div>
                         <div class="py-3">
+                            <label for="category_id" class="font-bold text-gray-700 uppercase">Tags</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                @foreach ($tags as $tag)
+                                    <div class="inline-block">
+                                        <input id="tag-{{$tag->id}}" type="checkbox" name="tags[]" value="{{$tag->id}}" class="p-2 rounded shadow">
+                                        <label for="tag-{{$tag->id}}"> {{$tag->name}}</label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="py-3">
                             <label for="body" class="font-bold text-gray-700 uppercase">Content</label>
                             <textarea name="body" id="body" rows="10" class="w-full block p-2 rounded shadow" >{{ $post->body }}</textarea>
                             @error('body')
