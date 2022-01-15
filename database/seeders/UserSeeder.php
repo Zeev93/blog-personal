@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'Dayanara',
-            'email' => 'dayanara.montalvo0@gmail.com',
+            'email' => 'dayanara@gmail.com',
             'password' => Hash::make('dayanara'),
             'email_verified_at' => Carbon::now(),
 
@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'Braulio',
-            'email' => 'braulio.robles@gmail.com',
+            'email' => 'braulio@gmail.com',
             'password' => Hash::make('braulio'),
             'email_verified_at' => Carbon::now(),
         ])->assignRole('User');
