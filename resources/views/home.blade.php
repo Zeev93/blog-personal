@@ -28,6 +28,8 @@
                             <p class="py-3 text-gray-700">
                                 {{ Str::limit( $post->body, 200)}}
                             </p>
+
+                            <p class="text-gray-500 text-sm"> Comments: {{count($post->comments)}}</p>
                             @if ( count($post->tags) > 1 )
                                 <p class="text-gray-700 py-3"> Tags:
                                     @foreach ($post->tags as $tag)

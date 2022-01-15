@@ -48,36 +48,39 @@
                         </div>
                     @endforeach
 
-                    <div class="p-3 shadow border">
-                        <h2 class="text-gray-700 font-bold uppercase text-2xl py-5">Share your opinion</h2>
-                        <form action="{{ route('comment.store') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="post_id" value="{{$post->id}}">
-                            <div class="p-3">
-                                <label for="title">Title</label>
-                                <input type="text" name="title" id="title" class="w-full block p-2 rounded shadow">
-                                @error('title')
-                                <div class="my-5 bg-red-500 text-center">
-                                    <span class="font-bold uppercase text-white" role="alert">{{ $message }}</span>
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="p-3">
-                                <label for="body">Comment</label>
-                                <textarea name="body" id="body" rows="5" class="w-full block p-2 rounded shadow"></textarea>
-                                @error('body')
-                                <div class="my-5 bg-red-500 text-center">
-                                    <span class="font-bold uppercase text-white" role="alert">{{ $message }}</span>
-                                </div>
-                                @enderror
-                            </div>
 
-                            <div class="px-3">
-                                <input type="submit" class="cursor-pointer ml-auto block bg-gray-700 rounded p-2 my-10 text-white font-bold uppercase hover:bg-gray-300 hover:text-gray-700" value="Send">
-                            </div>
+                    @can('comment.store')
+                        <div class="p-3 shadow border">
+                            <h2 class="text-gray-700 font-bold uppercase text-2xl py-5">Share your opinion</h2>
+                            <form action="{{ route('comment.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="post_id" value="{{$post->id}}">
+                                <div class="p-3">
+                                    <label for="title">Title</label>
+                                    <input type="text" name="title" id="title" class="w-full block p-2 rounded shadow">
+                                    @error('title')
+                                    <div class="my-5 bg-red-500 text-center">
+                                        <span class="font-bold uppercase text-white" role="alert">{{ $message }}</span>
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="p-3">
+                                    <label for="body">Comment</label>
+                                    <textarea name="body" id="body" rows="5" class="w-full block p-2 rounded shadow"></textarea>
+                                    @error('body')
+                                    <div class="my-5 bg-red-500 text-center">
+                                        <span class="font-bold uppercase text-white" role="alert">{{ $message }}</span>
+                                    </div>
+                                    @enderror
+                                </div>
 
-                        </form>
-                    </div>
+                                <div class="px-3">
+                                    <input type="submit" class="cursor-pointer ml-auto block bg-gray-700 rounded p-2 my-10 text-white font-bold uppercase hover:bg-gray-300 hover:text-gray-700" value="Send">
+                                </div>
+
+                            </form>
+                        </div>
+                    @endcan
                 </div>
             </div>
         </div>

@@ -19,7 +19,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('id', 'DESC')->paginate(10);
+        $users = User::paginate(10);
         return view('users.index', compact('users'));
     }
 
@@ -30,7 +30,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::pluck('name', 'name')->all();
+        $roles = Role::all();
         return view('users.create', compact('roles'));
     }
 
@@ -46,13 +46,12 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|same:password_confirmation',
-            // 'rol' => 'required'
         ]);
 
         $data['password'] = Hash::make($data['password']);
 
         $user = User::create($data);
-        // $user->assignRole($data['rol']);
+        $user->roles()->sync($request->roles);
 
         return redirect()->route('users.index')->with('status', 'User created successfully.');
     }
@@ -76,10 +75,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $roles = Role::pluck('name', 'name')->all();
-        $userRole = $user->roles->pluck('name', 'name')->all();
+        $roles = Role::all();
 
-        return view('users.edit', compact('user', 'roles', 'userRole'));
+        return view('users.edit', compact('user', 'roles'));
     }
 
     /**
@@ -96,13 +94,14 @@ class UserController extends Controller
             'password' => 'same:password_confirmation|required_if:password_confirmation,same:password_confirmation',
         ]);
 
-
-
         if(!empty($data['password'])){
             $data['password'] = Hash::make($data['password']);
         }else{
             $data = Arr::except($data, array('password'));
         }
+
+        $user->roles()->sync($request->roles);
+
         $user->update($data);
 
         return redirect()->route('users.index')->with('status', 'User updated successfully.');

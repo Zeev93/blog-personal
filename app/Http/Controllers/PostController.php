@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Tag;
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\PostComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -14,14 +15,6 @@ use Intervention\Image\Facades\Image;
 class PostController extends Controller
 {
 
-
-    function __construct()
-    {
-        // $this->middleware('permission:post-list|post-create|post-edit|post-delete', ['only' => ['index','show']]);
-        // $this->middleware('permission:post-create', ['only' => ['create','store']]);
-        // $this->middleware('permission:post-edit', ['only' => ['edit','update']]);
-        // $this->middleware('permission:post-delete', ['only' => ['destroy']]);
-    }
     /**
      * Display a listing of the resource.
      *
@@ -88,7 +81,8 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return view ('post.show', compact('post'));
+        $comments = PostComment::where('post_id', '=' , $post->id)->get();
+        return view ('post.show', compact('post', 'comments'));
     }
 
     /**

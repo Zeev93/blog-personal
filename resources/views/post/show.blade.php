@@ -13,7 +13,11 @@
                     <div class="py-5">
 
                         <div class="w-96 m-auto">
-                            <img src="{{ url('storage/' . $post->photo) }}" alt="{{ $post->title }}" class="w-fit">
+                            @if ($post->photo == '' )
+                            <img src="{{ asset('img/img-not-found.png') }}" alt="" class="w-64 m-auto py-5">
+                            @else
+                                <img src="{{ url('storage/'.$post->photo) }}" alt="" class="w-64 m-auto py-5">
+                            @endif
                         </div>
                         <div class="flex flex-col">
                             <p class="text-gray-500 text-center text-sm"> Published On: {{\Carbon\Carbon::parse($post->published_at)->format('d/m/Y')}}</p>
@@ -29,6 +33,18 @@
                         <p class="py-5 text-gray-700">
                             {{$post->body}}
                         </p>
+
+                    </div>
+                    <div class="p-6 shadow">
+                        <h2 class="text-gray-700 font-bold uppercase text-2xl py-5">Comments</h2>
+                        @foreach ($comments as $comment)
+                            <div class="p-3 shadow border">
+                                <h3 class="text-gray-700 text-2xl font-bold uppercase">Title: {{ $comment->title }}</h3>
+                                <p class="text-gray-500 text-sm"> Writed By: {{ $comment->user->name }}</p>
+                                <p class="text-gray-700">{{$comment->body}}</p>
+                                <p class="text-gray-500 text-sm"> Published On: {{\Carbon\Carbon::parse($comment->published_at)->format('d/m/Y')}}</p>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>

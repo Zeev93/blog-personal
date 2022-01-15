@@ -52,7 +52,17 @@
                                 </div>
                             @enderror
                         </div>
-
+                        <div class="py-3">
+                            <label for="category_id" class="font-bold text-gray-700 uppercase">Roles</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                @foreach ($roles as $role)
+                                    <div class="inline-block">
+                                        <input id="role-{{$role->id}}" type="checkbox" name="roles[]" value="{{$role->id}}" class="p-2 rounded shadow">
+                                        <label for="role-{{$role->id}}"> {{$role->name}} </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
 
                         <input type="submit" class="cursor-pointer ml-auto block bg-gray-700 rounded p-2 my-10 text-white font-bold uppercase hover:bg-gray-300 hover:text-gray-700" value="Create">
                     </form>

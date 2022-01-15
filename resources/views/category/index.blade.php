@@ -9,7 +9,9 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex flex-col py-3">
                         <h1 class="text-center text-3xl uppercase font-bold text-gray-700">Categories</h1>
+                        @can('categories.index')
                         <a href=" {{route('categories.create')}}" class="cursor-pointer ml-auto block bg-gray-700 rounded p-2 my-2 text-white font-bold uppercase hover:bg-gray-300 hover:text-gray-700"> New Category </a>
+                        @endcan
                     </div>
                     {{ $categories->links() }}
                     <div class="py-5">
@@ -25,14 +27,20 @@
                             <tbody>
                                 @foreach ($categories as $category)
                                     <tr class="hover:bg-gray-300">
-                                        <td>{{ $category->id }}</td>
+                                        <td class="py-3 px-4 m-2">{{ $category->id }}</td>
                                         <td>{{ $category->name }}</td>
-                                        <td><a href="{{route('categories.edit', ['category' => $category->id])}}" class="bg-orange-600 rounded py-1 px-4 m-2 text-white font-bold uppercase hover:bg-orange-300 hover:text-orange-600 text-center"><i class="fas fa-pencil-alt"></i></a></td>
+                                        <td>
+                                            @can('categories.edit')
+                                            <a href="{{route('categories.edit', ['category' => $category->id])}}" class="bg-orange-600 rounded py-1 px-4 m-2 text-white font-bold uppercase hover:bg-orange-300 hover:text-orange-600 text-center"><i class="fas fa-pencil-alt"></i></a>
+                                            @endcan
+                                        </td>
                                         <td>
                                             <form onsubmit="return confirmar(event, this);" action="{{route('categories.destroy', ['category' => $category->id])}}" method="POST" id="delete-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="bg-red-700 rounded py-1 px-4 m-2 text-white font-bold uppercase hover:bg-red-300 hover:text-red-700"><i class="fas fa-trash-alt"></i></button>
+                                                @can('categories.destroy')
+                                                    <button type="submit" class="bg-red-700 rounded py-1 px-4 m-2 text-white font-bold uppercase hover:bg-red-300 hover:text-red-700"><i class="fas fa-trash-alt"></i></button>
+                                                @endcan
                                             </form>
                                         </td>
                                     </tr>

@@ -59,7 +59,11 @@
                             <div class="grid grid-cols-2 gap-2">
                                 @foreach ($tags as $tag)
                                     <div class="inline-block">
-                                        <input id="tag-{{$tag->id}}" type="checkbox" name="tags[]" value="{{$tag->id}}" class="p-2 rounded shadow">
+                                        <input
+                                            @if(count($tag->posts->where('id', '=', $post->id)->chunk(1)) >= 1  )
+                                                checked
+                                            @endif
+                                        id="tag-{{$tag->id}}" type="checkbox" name="tags[]" value="{{$tag->id}}" class="p-2 rounded shadow">
                                         <label for="tag-{{$tag->id}}"> {{$tag->name}}</label>
                                     </div>
                                 @endforeach
